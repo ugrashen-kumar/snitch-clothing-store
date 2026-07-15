@@ -1,0 +1,25 @@
+import {setUser, setLoading, setError} from '../state/auth.slice.js'
+import { register, login } from '../service/auth.api.js'
+import { useDispatch } from 'react-redux'
+
+
+
+export const useAuth = () =>{
+    const dispatch = useDispatch()
+    async function handleRegister ({email, password, contact, fullname, isSeller = false}){
+        const data = await register({email, password, contact, fullname, isSeller})
+        dispatch(setUser(data))
+        return data.user
+    }
+    
+    
+    async function handleLogin({email, password}){
+        const data = await login({email, password})
+        dispatch(setUser(data))
+        return data.user
+    }
+    
+    
+    return {handleRegister, handleLogin}
+}
+
