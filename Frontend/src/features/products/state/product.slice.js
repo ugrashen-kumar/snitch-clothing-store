@@ -12,7 +12,7 @@ const productSlice = createSlice({
             state.sellerProducts = action.payload
         },
         setProducts : (state, action) =>{
-            state.products = action.palyload
+            state.products = action.payload
         }
     }
 })
