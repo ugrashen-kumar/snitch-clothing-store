@@ -33,6 +33,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import useProduct from "../hooks/useProduct";
+import { useCart } from "../../cart/hook/useCart";
 
 const ProductDetail = () => {
   const { handleGetProductById } = useProduct();
@@ -41,6 +42,7 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const navigate = useNavigate();
+  const { handleAddItem } = useCart();
 
   const fetchProductDetails = async () => {
     const data = await handleGetProductById(productId);
@@ -66,7 +68,7 @@ const ProductDetail = () => {
     });
   }, [product, selectedAttributes]);
 
-  console.log({ product, activeVariant });
+  console.log("activeeeeeeeeeeeeeeeeeeee",{ product, activeVariant });
 
   const availableAttributes = useMemo(() => {
     if (!product?.variants) return {};
