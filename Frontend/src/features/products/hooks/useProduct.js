@@ -18,7 +18,6 @@ const useProduct = () => {
 
   const handleGetAllProducts = async() =>{
     const data = await getAllProducts()
-    console.log(data)
     dispatch(setProducts(data.products))
   }
 

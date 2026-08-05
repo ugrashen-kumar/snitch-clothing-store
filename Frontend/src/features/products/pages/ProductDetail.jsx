@@ -68,8 +68,6 @@ const ProductDetail = () => {
     });
   }, [product, selectedAttributes]);
 
-  console.log("activeeeeeeeeeeeeeeeeeeee",{ product, activeVariant });
-
   const availableAttributes = useMemo(() => {
     if (!product?.variants) return {};
     const attrs = {};

@@ -49,7 +49,10 @@ const tokens = {
 
 const Cart = () => {
     const cart = useSelector(state => state.cart)
-    const { handleGetCart, handleIncrementCartItem, handleCreateCartOrder, handleVerifyCartOrder } = useCart()
+
+    console.log("carttttttttttt", cart)
+
+    const { handleGetCart, handleIncrementCartItem, handleDecrementCartItem, handleCreateCartOrder, handleVerifyCartOrder } = useCart()
     const navigate = useNavigate()
     // const { error, isLoading, Razorpay } = useRazorpay();
     const user = useSelector(state => state.user)
@@ -245,7 +248,8 @@ const Cart = () => {
 
                                     return (
                                         <div
-                                            key={_id}
+                                            // key={_id}
+                                            key={`${product._id}-${variantId}`}
                                             className="flex gap-6 md:gap-8 p-6 md:p-8 transition-all duration-300"
                                             style={{ backgroundColor: tokens.surfaceLow }}
                                         >
@@ -345,7 +349,7 @@ const Cart = () => {
                                                     >
                                                         <button
                                                             id={`qty-dec-${_id}`}
-                                                            onClick={() => changeQty(_id, -1)}
+                                                            onClick={() => handleDecrementCartItem({ productId: _id, variantId })}
                                                             className="w-9 h-9 flex items-center justify-center text-sm font-light transition-colors hover:opacity-60"
                                                             style={{ color: tokens.onSurface, borderRight: `1px solid ${tokens.outlineVariant}` }}
                                                             aria-label="Decrease quantity"
