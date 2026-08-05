@@ -251,7 +251,7 @@ const Cart = () => {
                                         >
                                             {/* Product Image */}
                                             <div
-                                                className="flex-shrink-0 overflow-hidden"
+                                                className="shrink-0 overflow-hidden"
                                                 style={{
                                                     width: 'clamp(100px, 15vw, 160px)',
                                                     aspectRatio: '4/5',
