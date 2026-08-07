@@ -1,61 +1,113 @@
-import mongoose from "mongoose"
-import cartModel from "../models/cart.model.js"
+import mongoose from "mongoose";
+import cartModel from "../models/cart.model.js";
 
 export async function getCartDetails(userId) {
-    let cart = (await cartModel.aggregate([
-        {
-            $match: {
-                user: new mongoose.Types.ObjectId(userId)
-            }
+  let cart = (
+    await cartModel.aggregate([
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(userId),
         },
-        { $unwind: { path: '$items' } },
-        {
-            $lookup: {
-                from: 'products',
-                localField: 'items.product',
-                foreignField: '_id',
-                as: 'items.product'
-            }
+      },
+      { $unwind: { path: "$items" } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "items.product",
+          foreignField: "_id",
+          as: "items.product",
         },
-        { $unwind: { path: '$items.product' } },
-        {
-            $unwind: { path: '$items.product.variants' }
+      },
+      { $unwind: { path: "$items.product" } },
+      {
+        $unwind: { path: "$items.product.variants" },
+      },
+      {
+        $match: {
+          $expr: {
+            $eq: ["$items.variant", "$items.product.variants._id"],
+          },
         },
-        {
-            $match: {
-                $expr: {
-                    $eq: [
-                        '$items.variant',
-                        '$items.product.variants._id'
-                    ]
-                }
-            }
+      },
+      {
+        $addFields: {
+          itemPrice: {
+            price: {
+              $multiply: [
+                "$items.quantity",
+                "$items.product.variants.price.amount",
+              ],
+            },
+            currency: "$items.product.variants.price.currency",
+          },
         },
-        {
-            $addFields: {
-                itemPrice: {
-                    price: {
-                        $multiply: [
-                            '$items.quantity',
-                            '$items.product.variants.price.amount'
-                        ]
-                    },
-                    currency:
-                        '$items.product.variants.price.currency'
-                }
-            }
+      },
+      {
+        $group: {
+          _id: "$_id",
+          totalPrice: { $sum: "$itemPrice.price" },
+          currency: {
+            $first: "$itemPrice.currency",
+          },
+          items: { $push: "$items" },
         },
-        {
-            $group: {
-                _id: '$_id',
-                totalPrice: { $sum: '$itemPrice.price' },
-                currency: {
-                    $first: '$itemPrice.currency'
-                },
-                items: { $push: '$items' }
-            }
-        }
-    ]))[ 0 ]
+      },
+    ])
+  )[0];
 
-    return cart
+//   let cart = db.getCollection("carts").aggregate(
+//     [
+//       {
+//         $match: {
+//           user: ObjectId("6a7570ce34dd18a40bc92743"),
+//         },
+//       },
+//       { $unwind: { path: "$items" } },
+//       {
+//         $lookup: {
+//           from: "products",
+//           localField: "items.product",
+//           foreignField: "_id",
+//           as: "items.product",
+//         },
+//       },
+//       { $unwind: { path: "$items.product" } },
+//       {
+//         $unwind: { path: "$items.product.variants" },
+//       },
+//       {
+//         $match: {
+//           $expr: {
+//             $eq: ["$items.variant", "$items.product.variants._id"],
+//           },
+//         },
+//       },
+//       {
+//         $addFields: {
+//           itemPrice: {
+//             price: {
+//               $multiply: [
+//                 "$items.quantity",
+//                 "$items.product.variants.price.amount",
+//               ],
+//             },
+//             currency: "$items.product.variants.price.currency",
+//           },
+//         },
+//       },
+//       {
+//         $group: {
+//           _id: "$_id",
+//           totalPrice: { $sum: "$itemPrice.price" },
+//           currency: {
+//             $first: "$itemPrice.currency",
+//           },
+//           items: { $push: "$items" },
+//         },
+//       },
+//     ],
+//     { maxTimeMS: 60000, allowDiskUse: true },
+//   );
+
+  return cart;
 }

@@ -49,9 +49,6 @@ const tokens = {
 
 const Cart = () => {
     const cart = useSelector(state => state.cart)
-
-    console.log("carttttttttttt", cart)
-
     const { handleGetCart, handleIncrementCartItem, handleDecrementCartItem, handleCreateCartOrder, handleVerifyCartOrder } = useCart()
     const navigate = useNavigate()
     // const { error, isLoading, Razorpay } = useRazorpay();
